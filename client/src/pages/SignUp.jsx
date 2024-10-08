@@ -49,7 +49,7 @@ const SignUp = () => {
             Blog
           </Link>
           <p className="text-sm mt-5 mb-3">
-            This is a blog page . You can sing up with your email and passowrd
+            This is a blog page . You can sign up with your email and passowrd
           </p>
         </div>
 
@@ -98,7 +98,7 @@ const SignUp = () => {
             </Button>
           </form>
           <div className="flex gap-2 mt-5 text-sm">
-            <span>Haven an account ?</span>
+            <span>Have an account ?</span>
             <Link to="/sign-in" className="text-blue-500">
               Sign In
             </Link>
