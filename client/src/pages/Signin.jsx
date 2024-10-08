@@ -2,39 +2,39 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { postRequest } from "../utils/api";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  singInFail,
+  singInSuccess,
+} from "../redux/user/userSllce";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
-    console.log(formData);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      setErrorMessage("Add all required fields");
+      return dispatch(singInFail("Add all required fields"));
     } else {
       try {
-        setLoading(true);
-        setErrorMessage(null);
-        const res = await postRequest("auth/signin", formData);
-        console.log(res);
-        if (res.success === false) {
-          return setErrorMessage(res.message);
-        }
-        if (res.ok) {
+        dispatch(signInStart);
+        const data = await postRequest("auth/signin", formData);
+        if (data.success === false) {
+          dispatch(singInFail(data.message));
+        } else {
+          dispatch(singInSuccess(data?.data));
           navigate("/");
         }
-        setLoading(false);
       } catch (error) {
-        setErrorMessage(error.message);
-        setLoading(false);
-        console.log(error);
+        dispatch(singInFail(error.message));
       }
     }
   };
@@ -84,7 +84,7 @@ const SignIn = () => {
                   <span>Loading ...</span>
                 </>
               ) : (
-                "Sign Up"
+                "Sign In"
               )}
             </Button>
           </form>
@@ -95,9 +95,9 @@ const SignIn = () => {
             </Link>
           </div>
         </div>
-        {errorMessage && (
+        {error && (
           <Alert className="mt-5" color="failure">
-            {errorMessage}
+            {error}
           </Alert>
         )}
       </div>
