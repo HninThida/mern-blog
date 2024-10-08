@@ -17,7 +17,7 @@ export const userSlice = createSlice({
     singInSuccess: (state, action) => {
       state.currentUser = action.payload;
       state.error = null;
-      state.loading = true;
+      state.loading = false;
     },
     singInFail: (state, action) => {
       state.error = action.payload;

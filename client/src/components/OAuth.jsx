@@ -14,14 +14,15 @@ export const OAuth = () => {
     provider.setCustomParameters({ prompt: "select_account" });
     try {
       const resultFromGoogle = await signInWithPopup(auth, provider);
-      console.log(resultFromGoogle);
       const data = await postRequest("auth/google", {
         name: resultFromGoogle.user?.displayName,
         email: resultFromGoogle.user?.email,
         googlePhotoUrl: resultFromGoogle.user?.photoURL,
       });
-      if (data.sucess) {
-        dispatch(singInSuccess(data));
+      console.log(data);
+
+      if (data.success) {
+        dispatch(singInSuccess(data?.data));
       }
     } catch (error) {
       console.log(error);
