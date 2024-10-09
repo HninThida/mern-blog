@@ -50,7 +50,7 @@ export const signin = async (req, res, next) => {
       return next(errorHandler(400, "Invalid password"));
     }
     const token = jwt.sign(
-      { id: validUser._id, isAdmin: validPassword.isAdmin },
+      { id: validUser._id, isAdmin: validUser.isAdmin },
       process.env.JWTSECREKEY
     );
 
@@ -138,7 +138,7 @@ export const google = async (req, res, next) => {
           Math.random().toString(9).slice(-4),
         email,
         password: hashedPassword,
-        profilePicture: googlePhotoUrl,
+        photourl: googlePhotoUrl,
       });
       await newUser.save();
       const token = jwt.sign(
