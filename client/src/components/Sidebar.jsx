@@ -2,9 +2,13 @@ import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiArrowRight, HiUser } from "react-icons/hi";
 import { Link, useLocation } from "react-router-dom";
+import { postRequest } from "../utils/api";
+import { SignOutSuccess } from "../redux/user/userSllce";
+import { useDispatch } from "react-redux";
 
 const DSidebar = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
   const [tab, setTab] = useState("");
 
   useEffect(() => {
@@ -15,6 +19,17 @@ const DSidebar = () => {
       setTab(tabfromUrl);
     }
   }, [location.search]);
+
+  const handleSignOut = async () => {
+    try {
+      const data = await postRequest("user/sign-out");
+      if (data.success) {
+        dispatch(SignOutSuccess(data));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
@@ -35,6 +50,7 @@ const DSidebar = () => {
             icon={HiArrowRight}
             labelColor="dark"
             as="div"
+            onClick={handleSignOut}
           >
             Sign out
           </Sidebar.Item>

@@ -68,3 +68,11 @@ export const deleteUser = async (req, res, next) => {
       .json({ success: true, message: "User has been deleted" });
   } catch (error) {}
 };
+export const singOut = async (req, res, next) => {
+  try {
+    return res
+      .clearCookie("access_token")
+      .status(200)
+      .json({ success: true, message: "User has been signout" });
+  } catch (error) {}
+};
