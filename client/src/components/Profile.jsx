@@ -20,10 +20,11 @@ import {
 } from "../redux/user/userSllce";
 import { deleteRequest, postRequest, putRequest } from "../utils/api";
 import { HiOutlineExclamation } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export default function DashProfile() {
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
@@ -207,8 +208,13 @@ export default function DashProfile() {
           placeholder="password"
           onChange={handleChange}
         />
-        <Button type="submit" gradientDuoTone="purpleToBlue" outline>
-          Update
+        <Button
+          type="submit"
+          gradientDuoTone="purpleToBlue"
+          outline
+          disabled={loading || imagefileUploading}
+        >
+          {loading ? "Loading ..." : "Update"}
         </Button>
       </form>
       <div className="text-red-500 flex justify-between mt-5">
@@ -228,6 +234,17 @@ export default function DashProfile() {
         <Alert className="mt-3" color="failure">
           {updateUserErrror}
         </Alert>
+      )}
+      {currentUser.isAdmin && (
+        <Link to="/create-post">
+          <Button
+            type="button"
+            gradientDuoTone="purpleToPink"
+            className="w-full mt-4"
+          >
+            Create a post
+          </Button>
+        </Link>
       )}
       <Modal
         show={showModal}
