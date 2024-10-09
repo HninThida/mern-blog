@@ -13,7 +13,6 @@ export default function Header() {
 
   return (
     <Navbar className="border-b-2">
-      
       <Link
         to="/"
         className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
@@ -48,9 +47,7 @@ export default function Header() {
             <Dropdown
               arrowIcon={false}
               inline
-              label={
-                <Avatar alt="user" img={currentUser?.profilePicture} rounded />
-              }
+              label={<Avatar alt="user" img={currentUser?.photourl} rounded />}
             >
               <Dropdown.Header>
                 <span className="block text-sm">{currentUser?.username}</span>

@@ -37,22 +37,21 @@ export const updateUser = async (req, res, next) => {
         errorHandler("400", "Username can only conatain character and number")
       );
     }
-
-    try {
-      const updatedUser = await User.findByIdAndUpdate(
-        req.params.userId,
-        {
-          $set: {
-            username: req.body.username,
-            email: req.body.email,
-            password: req.body.password,
-            photourl: req.body.photourl,
-          },
-        },
-        { new: true }
-      );
-      const { password, ...rest } = updatedUser._doc;
-      return res.status(200).json(rest);
-    } catch (error) {}
   }
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          password: req.body.password,
+          photourl: req.body.photourl,
+        },
+      },
+      { new: true }
+    );
+    const { password, ...rest } = updatedUser._doc;
+    return res.status(200).json({ success: true, data: rest });
+  } catch (error) {}
 };
