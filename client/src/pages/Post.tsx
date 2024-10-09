@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getRequest } from "../utils/api";
 import { Button, Spinner } from "flowbite-react";
+import CallToAction from "../components/CallToAction";
 
 const Post = () => {
   const { slug } = useParams();
@@ -57,6 +58,9 @@ const Post = () => {
             dangerouslySetInnerHTML={{ __html: post?.content }}
             className="mb-5 p-3 max-w-2xl mx-auto"
           ></div>
+          <div className="mx-auto max-w-4xl">
+            <CallToAction />
+          </div>
         </main>
       )}
     </div>
