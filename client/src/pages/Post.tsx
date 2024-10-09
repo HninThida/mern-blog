@@ -49,7 +49,7 @@ const Post = () => {
           <img
             src={post?.image}
             alt="image"
-            className="w-full mt-5 max-h-[500px] object-cover"
+            className="w-full max-w-3xl mx-auto mt-5 max-h-[500px] object-cover"
           />
           <div className="flex justify-between mt-5 mx-auto w-full  max-w-2xl content">
             <span>{new Date(post?.createdAt).toLocaleDateString()}</span>

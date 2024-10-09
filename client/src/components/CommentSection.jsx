@@ -1,14 +1,28 @@
 import { Alert, Button, Textarea } from "flowbite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { postRequest } from "../utils/api";
+import { getRequest, postRequest } from "../utils/api";
+import CommentBox from "./CommentBox";
 
 const CommentSection = (postId) => {
   const { currentUser } = useSelector((state) => state.user);
-  const [comment, setComment] = useState([]);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
   const [commentError, setCommentError] = useState(null);
   console.log(postId);
+
+  const handleGetComments = async () => {
+    const data = await getRequest(`comment/getpostcomments/${postId.postId}`);
+    if (data?.success) {
+      setComments(data?.data);
+    }
+  };
+
+  useEffect(() => {
+    handleGetComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +34,7 @@ const CommentSection = (postId) => {
       });
       if (data.success) {
         setComment("");
+        setComments({ data, ...comments });
         console.log(data?.message);
       } else {
         setCommentError(data.message);
@@ -31,7 +46,7 @@ const CommentSection = (postId) => {
   };
 
   return (
-    <div className="max-w-2xl w-full p-3">
+    <div className="max-w-3xl w-full p-3 mx-auto">
       {currentUser ? (
         <div className="flex items-center gap-1 my-5 text-gray-500 text-sm">
           <p>Signed in as :</p>
@@ -83,11 +98,30 @@ const CommentSection = (postId) => {
             </Button>
           </div>
           {commentError && (
-            <Alert color="failure" className="mt=5">
+            <Alert color="failure" className="mt-5 mb-3">
               {commentError}
             </Alert>
           )}
         </form>
+      )}
+      {comments?.length > 0 ? (
+        <>
+          <div className="my-5 flex gap-2">
+            <p>
+              Comments{" "}
+              <span className="border border-gray-500 py-1 px-2 rounded-sm">
+                {comments.length}{" "}
+              </span>
+            </p>
+          </div>
+          {comments?.map((comment, idx) => (
+            <div className="" key={idx}>
+              <CommentBox comment={comment} />
+            </div>
+          ))}
+        </>
+      ) : (
+        <p className="text-sm my-5">No comments</p>
       )}
     </div>
   );
