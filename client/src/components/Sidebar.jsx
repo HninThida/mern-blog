@@ -25,6 +25,7 @@ const DSidebar = () => {
               icon={HiUser}
               active={tab === "profile" ? true : false}
               labelColor="dark"
+              as="div"
             >
               Profile
             </Sidebar.Item>
@@ -33,6 +34,7 @@ const DSidebar = () => {
             className="cursor-pointer"
             icon={HiArrowRight}
             labelColor="dark"
+            as="div"
           >
             Sign out
           </Sidebar.Item>

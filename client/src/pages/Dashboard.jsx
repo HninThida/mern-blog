@@ -17,10 +17,12 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      <div className="md:w-65">
+      <div className="md:w-56">
+        {/* Sidebar */}
         <DSidebar />
       </div>
-      <div>{tab === "profile" && <Profile />}</div>
+      {/* profile... */}
+      {tab === "profile" && <Profile />}
     </div>
   );
 };
