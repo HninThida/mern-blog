@@ -1,0 +1,96 @@
+import { Alert, Button, Textarea } from "flowbite-react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { postRequest } from "../utils/api";
+
+const CommentSection = (postId) => {
+  const { currentUser } = useSelector((state) => state.user);
+  const [comment, setComment] = useState([]);
+  const [commentError, setCommentError] = useState(null);
+  console.log(postId);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const data = await postRequest(`comment/create`, {
+        content: comment,
+        userId: currentUser?._id,
+        postId: postId.postId,
+      });
+      if (data.success) {
+        setComment("");
+        console.log(data?.message);
+      } else {
+        setCommentError(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      setCommentError(error.message);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl w-full p-3">
+      {currentUser ? (
+        <div className="flex items-center gap-1 my-5 text-gray-500 text-sm">
+          <p>Signed in as :</p>
+          <img
+            src={currentUser?.photourl}
+            className="w-10 h-10 rounded-full"
+            alt=""
+          />
+          <Link
+            to={"/dashboard?tab=profile"}
+            className="text-xs text-cyan-400 hover:underline"
+          >
+            @ {currentUser?.username}
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="text-teal-500 flex gap-1">
+            You must to login to commit
+            <Link
+              to={"/sign-in"}
+              className="text-sm  mb-5 text-blue-500 underline"
+            >
+              {" "}
+              Sign in
+            </Link>
+          </div>
+        </>
+      )}
+      {currentUser && (
+        <form
+          className="border border-teal-500 rounded p-3"
+          onSubmit={handleSubmit}
+        >
+          <Textarea
+            value={comment}
+            className="p-3"
+            rows="3"
+            maxLength="200"
+            placeholder="Add a comment"
+            onChange={(e) => setComment(e.target.value)}
+          ></Textarea>
+          <div className="flex justify-between items-center gap-4 mt-5">
+            <p className="text-gray-500 text-xs">
+              {200 - comment?.length} characters remaining
+            </p>
+            <Button outline gradientDuoTone="purpleToBlue" type="submit">
+              Submit
+            </Button>
+          </div>
+          {commentError && (
+            <Alert color="failure" className="mt=5">
+              {commentError}
+            </Alert>
+          )}
+        </form>
+      )}
+    </div>
+  );
+};
+
+export default CommentSection;

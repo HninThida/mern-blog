@@ -55,34 +55,33 @@ export default function Header() {
         >
           {theme === "dark" ? <FaSun /> : <FaMoon />}
         </Button>
-        <Link to="/sign-in">
-          {currentUser ? (
-            <Dropdown
-              arrowIcon={false}
-              inline
-              label={<Avatar alt="user" img={currentUser?.photourl} rounded />}
-            >
-              <Dropdown.Header>
-                <span className="block text-sm">{currentUser?.username}</span>
-                <span className="block text-sm font-medium truncate">
-                  {currentUser?.email}
-                </span>
-                <Link to={"/dashboard?tab=profile"}>
-                  {" "}
-                  <Dropdown.Item>Profile</Dropdown.Item>
-                </Link>
-                <Dropdown.Divider></Dropdown.Divider>
-                <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
-              </Dropdown.Header>
-            </Dropdown>
-          ) : (
-            <>
-              <Button gradientDuoTone="purpleToBlue" outline>
-                Sign In
-              </Button>
-            </>
-          )}
-        </Link>
+        {currentUser ? (
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={<Avatar alt="user" img={currentUser?.photourl} rounded />}
+          >
+            <Dropdown.Header>
+              <span className="block text-sm">{currentUser?.username}</span>
+              <span className="block text-sm font-medium truncate">
+                {currentUser?.email}
+              </span>
+              <Link to={"/dashboard?tab=profile"}>
+                {" "}
+                <Dropdown.Item>Profile</Dropdown.Item>
+              </Link>
+              <Dropdown.Divider></Dropdown.Divider>
+              <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
+            </Dropdown.Header>
+          </Dropdown>
+        ) : (
+          <Link to="/sign-in">
+            <Button gradientDuoTone="purpleToBlue" outline>
+              Sign In
+            </Button>
+          </Link>
+        )}
+
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>

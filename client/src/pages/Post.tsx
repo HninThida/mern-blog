@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { getRequest } from "../utils/api";
 import { Button, Spinner } from "flowbite-react";
 import CallToAction from "../components/CallToAction";
+import CommentSection from "../components/CommentSection";
 
 const Post = () => {
   const { slug } = useParams();
@@ -60,6 +61,9 @@ const Post = () => {
           ></div>
           <div className="mx-auto max-w-4xl">
             <CallToAction />
+          </div>
+          <div>
+            <CommentSection postId={post?._id.toString()} />
           </div>
         </main>
       )}
