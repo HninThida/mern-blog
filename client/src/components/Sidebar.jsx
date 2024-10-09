@@ -1,6 +1,11 @@
 import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { HiArrowRight, HiDocumentText, HiUser } from "react-icons/hi";
+import {
+  HiArrowRight,
+  HiDocumentText,
+  HiOutlineUserGroup,
+  HiUser,
+} from "react-icons/hi";
 import { Link, useLocation } from "react-router-dom";
 import { postRequest } from "../utils/api";
 import { SignOutSuccess } from "../redux/user/userSllce";
@@ -15,7 +20,6 @@ const DSidebar = () => {
   useEffect(() => {
     const urlParems = new URLSearchParams(location.search);
     const tabfromUrl = urlParems.get("tab");
-    console.log(tabfromUrl);
     if (tabfromUrl) {
       setTab(tabfromUrl);
     }
@@ -55,6 +59,18 @@ const DSidebar = () => {
                 as="div"
               >
                 Posts
+              </Sidebar.Item>
+            </Link>
+          )}
+          {currentUser?.isAdmin && (
+            <Link to={"/dashboard?tab=users"}>
+              <Sidebar.Item
+                icon={HiOutlineUserGroup}
+                active={tab === "users" ? true : false}
+                labelColor="dark"
+                as="div"
+              >
+                Users
               </Sidebar.Item>
             </Link>
           )}
