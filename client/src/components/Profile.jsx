@@ -47,6 +47,7 @@ export default function DashProfile() {
     if (imageFile) {
       uploadImage();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageFile]);
 
   const uploadImage = async () => {
