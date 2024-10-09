@@ -24,6 +24,28 @@ export const createPost = async (req, res, next) => {
     next(error);
   }
 };
+export const updatePost = async (req, res, next) => {
+  if (!req.user?.isAdmin) {
+    return next(errorHandler(403, "Not allowed to update post"));
+  }
+  try {
+    const updatePosts = await Post.findByIdAndUpdate(
+      req.params.postId,
+      {
+        $set: {
+          title: req.body.title,
+          content: req.body.content,
+          category: req.body.category,
+          image: req.body.image,
+        },
+      },
+      { new: true }
+    );
+    return res.status(201).json({ success: true, data: updatePosts });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const getposts = async (req, res, next) => {
   try {
