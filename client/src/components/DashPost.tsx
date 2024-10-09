@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { getRequest } from "../utils/api";
-import { Button, Table } from "flowbite-react";
+import { deleteRequest, getRequest } from "../utils/api";
+import { Button, Modal, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
+import { HiOutlineExclamation } from "react-icons/hi";
 
 const DashPost = () => {
   const [post, setPost] = useState([]);
   const [showMore, setShowMore] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [deletePostId, setdeletePostId] = useState(null);
 
   const handleGetPost = async () => {
-    const data = await getRequest("post?startIndex=0");
+    const data = await getRequest("post?");
     if (data?.success) {
       setPost(data?.data);
       if (data?.data?.length < 9) {
@@ -30,6 +33,22 @@ const DashPost = () => {
   useEffect(() => {
     handleGetPost();
   }, []);
+
+  const handleDeletePost = async () => {
+    setShowModal(false);
+    try {
+      const data = await deleteRequest(`post/delete/${deletePostId}`);
+      if (data.success) {
+        setPost((prev): any =>
+          prev.filter((post: any) => post._id !== deletePostId)
+        );
+      } else {
+        console.log(data?.messsage);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="table-auto mx-auto overflow-x-scroll md:mx:auto p-3 scrollbar scrollbar-thumb-slate-300 scrollbar-track-slate-100 dark:scrollbar-thumb-slate-500 dark:scrollbar-track-slate-700">
@@ -69,7 +88,13 @@ const DashPost = () => {
                     </Link>
                   </Table.Cell>
                   <Table.Cell>
-                    <span className="text-red-500 font-medium hover:underline cursor-pointer">
+                    <span
+                      className="text-red-500 font-medium hover:underline cursor-pointer"
+                      onClick={() => {
+                        setShowModal(true);
+                        setdeletePostId(item?._id);
+                      }}
+                    >
                       Delete
                     </span>
                   </Table.Cell>
@@ -89,6 +114,31 @@ const DashPost = () => {
       ) : (
         <p>No posts yet</p>
       )}
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header></Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamation className="h-16 w-16 text-gray-400 dark:text-gray-200 mx-auto mb-4" />
+            <h3 className="mb-5 text-gray-500 dark:text-gray-200">
+              {" "}
+              Are you Sure you want to delete this post ?{" "}
+            </h3>
+          </div>
+          <div className="flex justify-center gap-5">
+            <Button color="failure" onClick={handleDeletePost}>
+              Sure
+            </Button>
+            <Button color="gray" onClick={() => setShowModal(false)}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
