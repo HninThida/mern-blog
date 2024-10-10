@@ -9,7 +9,12 @@ export default {
     "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        ttuPattern:
+          "url('https://cdn.pixabay.com/photo/2016/05/27/08/51/mobile-phone-1419275_1280.jpg')",
+      },
+    },
   },
   plugins: [flowbite, scrollbar],
 };

@@ -1,4 +1,5 @@
 import Comment from "../modals/comment.modal.js";
+import User from "../modals/user.modal.js";
 import { errorHandler } from "../utils/error.js";
 
 export const createComment = async (req, res, next) => {
@@ -28,6 +29,54 @@ export const getPostComment = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getAllComments = async (req, res, next) => {
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 9;
+    const sortDirection = req.query.order === "asc" ? 1 : -1;
+    const comments = await Comment.find()
+      .sort({ updatedAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
+    const processedComments = await Promise.all(
+      comments.map(async (comment) => {
+        const user = await User.findById(comment.userId);
+
+        if (user) {
+          return {
+            ...comment._doc, // Copy comment fields
+            user, // Attach the user object
+          };
+        } else {
+          return {
+            ...comment._doc, // Copy comment fields
+            userId: comment.userId, // Keep userId as is
+          };
+        }
+      })
+    );
+    const totalComments = await Comment.countDocuments();
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+    const lastMonthComments = await Comment.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+    return res.status(200).json({
+      success: true,
+      data: processedComments,
+      totalComments,
+      lastMonthComments,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const likeComment = async (req, res, next) => {
   try {
     const comment = await Comment.findById(req.params.commentId, {});

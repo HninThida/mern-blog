@@ -5,12 +5,14 @@ import {
   likeComment,
   editComment,
   deleteComment,
+  getAllComments
 } from "../controllers/comment.controller.js";
 import { verifyToken } from "../utils/verifyuser.js";
 
 const router = express.Router();
 router.post("/create", verifyToken, createComment);
 router.get("/getpostcomments/:postId", getPostComment);
+router.get("/comments",verifyToken, getAllComments);
 router.put("/like-comment/:commentId", verifyToken, likeComment);
 router.put("/like-comment/:commentId", verifyToken, likeComment);
 router.put("/edit-comment/:commentId", verifyToken, editComment);

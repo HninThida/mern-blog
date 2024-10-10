@@ -4,12 +4,21 @@ import { getRequest } from "../utils/api";
 import { Button, Spinner } from "flowbite-react";
 import CallToAction from "../components/CallToAction";
 import CommentSection from "../components/CommentSection";
+import PostCard from "../components/PostComponent";
 
 const Post = () => {
   const { slug } = useParams();
   const [loading, setLoading] = useState(true);
+  const [recentPost, setRecentPost] = useState([null]);
   const [error, setError] = useState(false);
   const [post, setPost] = useState<any>(null);
+
+  const handleGetRecentPost = async () => {
+    const data = await getRequest("post?limit=3");
+    if (data?.success) {
+      setRecentPost(data?.data);
+    }
+  };
 
   const handleGetPost = async () => {
     const data = await getRequest(`post?slug=${slug}`);
@@ -24,6 +33,7 @@ const Post = () => {
 
   useEffect(() => {
     handleGetPost();
+    handleGetRecentPost();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -64,6 +74,17 @@ const Post = () => {
           </div>
           <div>
             <CommentSection postId={post?._id.toString()} />
+          </div>
+          <div className="flex flex-col items-center justify-center mb-5">
+            <h1 className="text-lg ">Recent Blogs</h1>
+            <div className="flex flex-wrap gap-5 mt-5 justify-center">
+              {recentPost &&
+                recentPost?.map((item) => (
+                  <>
+                    <PostCard post={item} />
+                  </>
+                ))}
+            </div>
           </div>
         </main>
       )}
