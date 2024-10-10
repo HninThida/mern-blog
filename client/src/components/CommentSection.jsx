@@ -72,12 +72,20 @@ const CommentSection = (postId) => {
           )
         );
       }
-      else{
-        
-      }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleEditComment = async (commentId, editedComment) => {
+    console.log(commentId);
+    console.log(editedComment);
+
+    setComments(
+      comments.map((c) =>
+        c._id === commentId._id ? { ...c, content: editedComment } : c
+      )
+    );
   };
 
   return (
@@ -151,7 +159,11 @@ const CommentSection = (postId) => {
           </div>
           {comments?.map((comment, idx) => (
             <div className="" key={idx}>
-              <CommentBox comment={comment} handleLike={handleLike} />
+              <CommentBox
+                comment={comment}
+                handleLike={handleLike}
+                handleEditComment={handleEditComment}
+              />
             </div>
           ))}
         </>

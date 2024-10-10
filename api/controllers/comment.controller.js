@@ -29,18 +29,12 @@ export const getPostComment = async (req, res, next) => {
   }
 };
 export const likeComment = async (req, res, next) => {
-  console.log(req.params);
-
   try {
     const comment = await Comment.findById(req.params.commentId, {});
     if (!comment) {
       return next(errorHandler(400, "Comment not found"));
     }
     const userIndex = comment.likes?.indexOf(req.user.id);
-    console.log(userIndex);
-    console.log(comment);
-    console.log(req.user.id);
-
     if (userIndex === -1) {
       comment.numberOfLikes += 1;
       comment.likes.push(req.user.id);
@@ -52,6 +46,32 @@ export const likeComment = async (req, res, next) => {
     }
     await comment.save();
     return res.status(200).json({ success: true, data: comment });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const editComment = async (req, res, next) => {
+  try {
+    const comment = await Comment.findById(req.params.commentId, {});
+    if (!comment) {
+      return next(errorHandler(400, "Comment not found"));
+    }
+
+    if (comment.userId !== req.user.id && !req.user.isAdmin) {
+      return next(errorHandler(403, "You are not allowed to edit"));
+    }
+    const updateComments = await Comment.findByIdAndUpdate(
+      req.params.commentId,
+      {
+        content: req.body.content,
+      },
+      {
+        new: true,
+      }
+    );
+    await updateComments.save();
+    return res.status(200).json({ success: true, data: updateComments });
   } catch (error) {
     next(error);
   }
