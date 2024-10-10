@@ -1,8 +1,8 @@
 import { Alert, Button, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { getRequest, postRequest } from "../utils/api";
+import { Link, useNavigate } from "react-router-dom";
+import { getRequest, postRequest, putRequest } from "../utils/api";
 import CommentBox from "./CommentBox";
 
 const CommentSection = (postId) => {
@@ -10,7 +10,7 @@ const CommentSection = (postId) => {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [commentError, setCommentError] = useState(null);
-  console.log(postId);
+  const navigate = useNavigate();
 
   const handleGetComments = async () => {
     const data = await getRequest(`comment/getpostcomments/${postId.postId}`);
@@ -34,7 +34,8 @@ const CommentSection = (postId) => {
       });
       if (data.success) {
         setComment("");
-        setComments({ data, ...comments });
+        setComments([data?.data, ...comments]);
+
         console.log(data?.message);
       } else {
         setCommentError(data.message);
@@ -42,6 +43,40 @@ const CommentSection = (postId) => {
     } catch (error) {
       console.log(error);
       setCommentError(error.message);
+    }
+  };
+
+  const handleLike = async (commentId) => {
+    console.log(commentId);
+
+    if (!currentUser) {
+      navigate("/sign-in");
+      return;
+    }
+    try {
+      const data = await putRequest(`comment/like-comment/${commentId}`);
+      console.log(data);
+
+      if (data.success) {
+        setComments(
+          comments.map((comment) =>
+            comment._id === commentId
+              ? {
+                  ...comment,
+                  content: data?.data?.content,
+                  likes: data?.data?.likes,
+                  numberOfLikes: data?.data?.likes?.length,
+                  userId: data?.data?.userId,
+                }
+              : comment
+          )
+        );
+      }
+      else{
+        
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -116,7 +151,7 @@ const CommentSection = (postId) => {
           </div>
           {comments?.map((comment, idx) => (
             <div className="" key={idx}>
-              <CommentBox comment={comment} />
+              <CommentBox comment={comment} handleLike={handleLike} />
             </div>
           ))}
         </>

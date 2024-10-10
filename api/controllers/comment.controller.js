@@ -7,7 +7,7 @@ export const createComment = async (req, res, next) => {
     if (userId !== req.user.id) {
       return next(errorHandler(403, "Not allowed to create comment"));
     }
-    const newComment = await new Comment({
+    const newComment = new Comment({
       content,
       postId,
       userId,
@@ -24,6 +24,34 @@ export const getPostComment = async (req, res, next) => {
       createdAt: -1,
     });
     return res.status(200).json({ success: true, data: comments });
+  } catch (error) {
+    next(error);
+  }
+};
+export const likeComment = async (req, res, next) => {
+  console.log(req.params);
+
+  try {
+    const comment = await Comment.findById(req.params.commentId, {});
+    if (!comment) {
+      return next(errorHandler(400, "Comment not found"));
+    }
+    const userIndex = comment.likes?.indexOf(req.user.id);
+    console.log(userIndex);
+    console.log(comment);
+    console.log(req.user.id);
+
+    if (userIndex === -1) {
+      comment.numberOfLikes += 1;
+      comment.likes.push(req.user.id);
+    } else {
+      if (comment.numberOfLikes > 0) {
+        comment.numberOfLikes -= 1;
+      }
+      comment.likes.splice(userIndex, 1);
+    }
+    await comment.save();
+    return res.status(200).json({ success: true, data: comment });
   } catch (error) {
     next(error);
   }
