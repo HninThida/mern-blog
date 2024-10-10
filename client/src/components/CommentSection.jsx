@@ -1,15 +1,23 @@
-import { Alert, Button, Textarea } from "flowbite-react";
+import { Alert, Button, Modal, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getRequest, postRequest, putRequest } from "../utils/api";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+  putRequest,
+} from "../utils/api";
 import CommentBox from "./CommentBox";
+import { HiOutlineExclamation } from "react-icons/hi";
 
 const CommentSection = (postId) => {
   const { currentUser } = useSelector((state) => state.user);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [commentError, setCommentError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [deleteCommentId, setdeleteCommentId] = useState(null);
   const navigate = useNavigate();
 
   const handleGetComments = async () => {
@@ -88,6 +96,18 @@ const CommentSection = (postId) => {
     );
   };
 
+  const handleDeleteComment = async (comment) => {
+    setShowModal(false);
+    try {
+      const data = await deleteRequest(`comment/delete-comment/${comment}`);
+      if (data.success) {
+        setComments((prev) => prev.filter((c) => c._id !== comment));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="max-w-3xl w-full p-3 mx-auto">
       {currentUser ? (
@@ -163,6 +183,9 @@ const CommentSection = (postId) => {
                 comment={comment}
                 handleLike={handleLike}
                 handleEditComment={handleEditComment}
+                onDeleteComment={() => {
+                  setShowModal(true), setdeleteCommentId(comment?._id);
+                }}
               />
             </div>
           ))}
@@ -170,6 +193,34 @@ const CommentSection = (postId) => {
       ) : (
         <p className="text-sm my-5">No comments</p>
       )}
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header></Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamation className="h-16 w-16 text-gray-400 dark:text-gray-200 mx-auto mb-4" />
+            <h3 className="mb-5 text-gray-500 dark:text-gray-200">
+              {" "}
+              Are you Sure you want to delete this comment ?{" "}
+            </h3>
+          </div>
+          <div className="flex justify-center gap-5">
+            <Button
+              color="failure"
+              onClick={() => handleDeleteComment(deleteCommentId)}
+            >
+              Sure
+            </Button>
+            <Button color="gray" onClick={() => setShowModal(false)}>
+              Cancel
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
