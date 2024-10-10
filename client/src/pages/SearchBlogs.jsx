@@ -37,7 +37,7 @@ export default function SearchBlogs() {
     const fetchPosts = async () => {
       setLoading(true);
       const searchQuery = urlParams.toString();
-      const data = await getRequest(`/post?${searchQuery}`);
+      const data = await getRequest(`post?${searchQuery}`);
 
       if (data.success) {
         setPosts(data.data);
@@ -82,7 +82,7 @@ export default function SearchBlogs() {
     const urlParams = new URLSearchParams(location.search);
     urlParams.set("startIndex", startIndex);
     const searchQuery = urlParams.toString();
-    const res = await fetch(`/post?${searchQuery}`);
+    const res = await fetch(`post?${searchQuery}`);
     if (!res.ok) {
       return;
     }

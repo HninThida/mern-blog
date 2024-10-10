@@ -49,7 +49,7 @@ const Post = () => {
             {post?.title}
           </h1>
           <Link
-            to={`/search/category=${post.category}`}
+            to={`/search?category=${post.category}`}
             className="self-center mt-5"
           >
             <Button color="gray" pill size="sm">

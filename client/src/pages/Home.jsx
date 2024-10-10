@@ -20,7 +20,7 @@ const Home = () => {
   return (
     <div>
       <section
-        className="relative bg-cover bg-center h-96 bg-ttuPattern mb-5"
+        className="relative bg-cover bg-center h-96 bg-ttuPattern mb-10"
         // style="background-image: url('https://example.com/luxury-banner.jpg');"
       >
         <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -43,8 +43,8 @@ const Home = () => {
         </div>
       </section>
       <CallToAction />
-      <div className="flex flex-col items-center justify-center mb-5">
-        <h1 className="text-lg ">Recent Blogs</h1>
+      <div className="flex flex-col items-center justify-center my-10">
+        <h1 className="text-3xl font-bold mb-5">Recent Blogs</h1>
         <div className="flex flex-wrap gap-5 mt-5 justify-center">
           {recentPost &&
             recentPost?.map((item, idx) => <PostCard post={item} key={idx} />)}

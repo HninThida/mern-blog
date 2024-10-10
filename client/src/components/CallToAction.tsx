@@ -7,7 +7,7 @@ const CallToAction = () => {
       <section className="mb-4">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="border p-6 border-teal-500 text-center rounded-bl-3xl rounded-tr-3xl">
-            <h3 className="text-3xl font-semibold sm:text-4xl">
+            <h3 className=" font-semibold sm:text-2xl">
               Want to Stay Updated?
             </h3>
             <p className="mt-4 text-lg leading-6">
